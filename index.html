@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Couple Budget</title>
+    <link rel="icon" href="media/branding/couple-budget-logo-round.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="phone-shell" aria-live="polite">
+      <div id="actionMenu" class="action-menu" hidden>
+        <button id="addUserButton" type="button">Add user</button>
+        <button data-go="confirm" type="button">Edit trip</button>
+        <button data-go="account" type="button">Settings</button>
+        <button data-logout type="button">Log out</button>
+        <button data-backup-now type="button">Backup now</button>
+        <button data-export-csv type="button">Export Data</button>
+      </div>
+
+      <section class="screen active auth-screen" data-screen="auth">
+        <div class="auth-card">
+          <div class="cloud-icon">AA</div>
+          <p>One goal. Two hearts.</p>
+          <h1>Couple Budget</h1>
+          <label>Email ID<input id="authEmailInput" type="email" autocomplete="email" placeholder="name@example.com" /></label>
+          <label>Password<input id="authPasswordInput" type="password" autocomplete="current-password" placeholder="Password" /></label>
+          <div class="auth-actions">
+            <button id="authLoginButton" class="account-primary" type="button">Login</button>
+            <button id="authCreateButton" class="secondary-button" type="button">Create account</button>
+          </div>
+          <p id="authStatus" class="backup-status">Create an account or login to open your trips.</p>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="start">
+        <div class="top-actions">
+          <span></span>
+          <button class="circle-action" data-go="name" data-new-trip type="button" aria-label="Create trip">+</button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </div>
+        <div class="empty-hero">
+          <div class="cloud-icon">AA</div>
+          <p>One goal. Two hearts.</p>
+          <h1>Couple Budget</h1>
+        </div>
+        <div class="landscape" aria-hidden="true">
+          <div class="mountain left"></div>
+          <div class="mountain center"></div>
+          <div class="mountain right"></div>
+          <div class="tree"></div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="name">
+        <header class="screen-head">
+          <button class="back" data-go="trips" type="button" aria-label="Back">&lsaquo;</button>
+          <button class="text-button" data-go="trips" type="button">Cancel</button>
+        </header>
+        <div class="setup-panel">
+          <h1>Choose a Name</h1>
+          <input id="tripNameInput" class="soft-input" placeholder='e.g. "Italy" or "Work & Travel 2026"' />
+          <label class="photo-row">
+            <span id="tripPhotoPreview" class="photo-badge">+</span>
+            <strong id="tripPhotoLabel">Add a Photo (optional)</strong>
+            <input id="tripPhotoInput" type="file" accept="image/*" hidden />
+          </label>
+        </div>
+        <button class="bottom-primary" data-go="dates" type="button">Continue</button>
+      </section>
+
+      <section class="screen" data-screen="dates">
+        <header class="screen-head">
+          <button class="back" data-go="name" type="button" aria-label="Back">&lsaquo;</button>
+          <button class="text-button" data-go="trips" type="button">Cancel</button>
+        </header>
+        <div class="setup-panel">
+          <h1>Travel Dates</h1>
+          <p class="center-copy">Use dates to calculate daily budget and average spend.</p>
+          <div class="choice-card">
+            <button data-go="travelDates" type="button">
+              <span><strong>Enter trip dates</strong><small>For vacations and planned travel</small></span>
+              <b>&rsaquo;</b>
+            </button>
+            <button data-go="currency" type="button">
+              <span><strong>Skip dates</strong><small>For open-ended spending</small></span>
+              <b>&rsaquo;</b>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="travelDates">
+        <header class="screen-head compact-head">
+          <button class="back" data-go="dates" type="button" aria-label="Back">&lsaquo;</button>
+          <button class="text-button" data-go="trips" type="button">Cancel</button>
+        </header>
+        <div class="setup-panel">
+          <h1>Pick Dates</h1>
+          <div class="date-card editable-card">
+            <label>
+              <span>Start</span>
+              <input id="startDateInput" type="date" />
+            </label>
+            <label>
+              <span>End</span>
+              <input id="endDateInput" type="date" />
+            </label>
+          </div>
+          <div class="info-card">
+            <span>i</span>
+            <p>End date is adjusted automatically when it is earlier than the start date.</p>
+          </div>
+        </div>
+        <button class="bottom-primary" data-go="currency" type="button">Continue</button>
+        <button class="skip-button" data-go="currency" type="button">Skip</button>
+      </section>
+
+      <section class="screen" data-screen="currency">
+        <header class="screen-head">
+          <button class="back" data-go="dates" type="button" aria-label="Back">&lsaquo;</button>
+          <button class="text-button" data-go="trips" type="button">Cancel</button>
+        </header>
+        <div class="setup-panel">
+          <h1>Home Currency</h1>
+          <p class="center-copy">New trips start with your home currency. Change it later from trip options.</p>
+          <button class="settings-row" data-go="currencies" type="button">
+            <span>Currency</span>
+            <strong id="homeCurrencyLabel">INR (&#8377;)</strong>
+            <b>&rsaquo;</b>
+          </button>
+        </div>
+        <button class="bottom-primary" data-go="budget" type="button">Continue</button>
+      </section>
+
+      <section class="screen list-screen" data-screen="currencies">
+        <header class="list-head">
+          <button class="back" data-go="currency" type="button" aria-label="Back">&lsaquo;</button>
+          <h2>Currencies</h2>
+        </header>
+        <input id="currencySearch" class="soft-input list-search" placeholder="Search currency" />
+        <div id="currencyList" class="currency-list"></div>
+      </section>
+
+      <section class="screen" data-screen="budget">
+        <header class="screen-head">
+          <button class="back" data-go="currency" type="button" aria-label="Back">&lsaquo;</button>
+          <span></span>
+        </header>
+        <div class="setup-panel">
+          <h1>Budget</h1>
+          <p class="center-copy">Set a daily target for this trip.</p>
+          <label class="amount-row">
+            <span>Daily Budget</span>
+            <input id="dailyBudgetInput" inputmode="decimal" placeholder="0.00" />
+          </label>
+        </div>
+        <button class="bottom-primary" data-go="confirm" type="button">Continue</button>
+        <button class="skip-button" data-go="confirm" type="button">Skip</button>
+      </section>
+
+      <section class="screen" data-screen="confirm">
+        <header class="screen-head compact-head">
+          <button class="back" data-go="trips" type="button" aria-label="Back">&lsaquo;</button>
+          <span></span>
+        </header>
+        <div class="setup-panel">
+          <h1>Trip Details</h1>
+          <p class="center-copy">Edit any trip option from here.</p>
+          <div class="review-card">
+            <button data-go="name" type="button"><span>Name</span><strong id="reviewName">Vietnam</strong><em>Edit</em></button>
+            <button data-go="travelDates" type="button"><span>Dates</span><strong id="reviewDates">23/05/2026 - 23/05/2026</strong><em>Edit</em></button>
+            <button data-go="currency" type="button"><span>Currency</span><strong id="reviewCurrency">INR (&#8377;)</strong><em>Edit</em></button>
+            <button data-go="budget" type="button"><span>Daily Budget</span><strong id="reviewBudget">&#8377;55.00</strong><em>Edit</em></button>
+            <button id="reviewUsersButton" type="button"><span>Users</span><strong id="reviewUsers">Anonymous User</strong><em>Add</em></button>
+          </div>
+        </div>
+        <button class="bottom-primary" id="finishTripButton" type="button">Save Trip</button>
+        <button class="skip-button" data-go="trips" type="button">Back to Trips</button>
+      </section>
+
+      <section class="screen" data-screen="trips">
+        <header class="app-head">
+          <button class="back" data-go="entries" type="button" aria-label="Close">&times;</button>
+          <h1>Trips</h1>
+          <button class="circle-action" data-go="name" data-new-trip type="button" aria-label="Add trip">+</button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </header>
+        <div id="tripList" class="trip-list"></div>
+      </section>
+
+      <section class="screen tab-screen" data-screen="entries">
+        <div class="screen-scroll">
+        <header class="trip-head entries-head">
+          <div class="brand-lockup">
+            <img src="media/branding/couple-budget-logo-round.png" alt="Couple Budget logo" />
+            <span><strong>Couple Budget</strong><small>Shared finance workspace</small></span>
+          </div>
+          <button class="trip-title" data-go="trips" type="button"><span id="tripTitle">Vietnam</span><i></i></button>
+          <button class="header-add-expense" data-go="category" type="button"><span>+</span>Add expense</button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </header>
+        <label class="display-currency-row">
+          <span>Convert view to</span>
+          <select id="displayCurrencySelect" aria-label="Display currency"></select>
+        </label>
+        <div class="stat-row">
+          <article><span>Total</span><strong id="totalSpend">&#8377;55.00</strong></article>
+          <article><span>Daily Average</span><strong id="dailyAverage">&#8377;55.00</strong></article>
+        </div>
+        <div class="day-label"><span>Today</span><strong id="todayTotal">&#8377;55.00</strong></div>
+        <div id="entryList" class="entry-list"></div>
+        <div class="quick-add single-add">
+          <button class="plus-button" data-go="category" type="button" aria-label="Add expense">+</button>
+        </div>
+        </div>
+        <nav class="bottom-nav" aria-label="Primary">
+          <button class="active" data-go="entries" type="button"><b><img src="media/icons/png/budget/budget_1.png" alt="" /></b><span>Entries</span></button>
+          <button data-go="stats" type="button"><b><img src="media/icons/png/money/money_1.png" alt="" /></b><span>Stats</span></button>
+          <button data-go="search" type="button"><b><img src="media/icons/png/spending/spending_1.png" alt="" /></b><span>Find</span></button>
+          <button data-go="account" type="button"><b><img src="media/icons/png/wallet/wallet_1.png" alt="" /></b><span>Account</span></button>
+          <button data-go="admin" data-admin-only type="button" hidden><b><img src="media/icons/png/saving/saving_1.png" alt="" /></b><span>Admin Center</span></button>
+        </nav>
+      </section>
+
+      <section class="screen tab-screen" data-screen="stats">
+        <div class="screen-scroll">
+        <header class="trip-head stats-head">
+          <button class="trip-title" data-go="trips" type="button"><span>Vietnam</span><i></i></button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </header>
+        <div class="section-title-row">
+          <h1>Daily Metrics</h1>
+        </div>
+        <div class="stat-row metrics-row">
+          <article><span>Daily Average</span><strong id="statsDailyAverage">&#8377;55.00</strong></article>
+          <article><span>Total to Date</span><strong id="statsTotalDate">&#8377;55.00</strong></article>
+        </div>
+        <details class="export-menu top-export">
+          <summary><span>EX</span><strong>Export Data</strong><b>&rsaquo;</b></summary>
+          <div>
+            <button data-export-format="csv" type="button">CSV</button>
+            <button data-export-format="pdf" type="button">PDF</button>
+            <button data-export-format="xlsx" type="button">Xlsx</button>
+          </div>
+        </details>
+        <section class="chart-card">
+          <h2>Charts</h2>
+          <div class="chart-controls">
+            <label>Group by
+              <select id="chartMode">
+                <option value="category">Categories</option>
+                <option value="payment">Payment</option>
+                <option value="country">Countries</option>
+                <option value="user">Users</option>
+              </select>
+            </label>
+            <label>Chart
+              <select id="chartType">
+                <option value="pie">Pie</option>
+                <option value="bar">Bar</option>
+                <option value="line">Line</option>
+              </select>
+            </label>
+          </div>
+          <div id="analyticsSummary" class="analytics-summary"></div>
+          <div id="chartCanvas" class="chart-canvas"></div>
+          <div id="donutLegend" class="donut-legend"></div>
+          <h2>Spend by Month</h2>
+          <div id="monthBars" class="bar-months"></div>
+          <div class="month-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
+        </section>
+        </div>
+        <nav class="bottom-nav" aria-label="Primary">
+          <button data-go="entries" type="button"><b><img src="media/icons/png/budget/budget_1.png" alt="" /></b><span>Entries</span></button>
+          <button class="active" data-go="stats" type="button"><b><img src="media/icons/png/money/money_1.png" alt="" /></b><span>Stats</span></button>
+          <button data-go="search" type="button"><b><img src="media/icons/png/spending/spending_1.png" alt="" /></b><span>Find</span></button>
+          <button data-go="account" type="button"><b><img src="media/icons/png/wallet/wallet_1.png" alt="" /></b><span>Account</span></button>
+          <button data-go="admin" data-admin-only type="button" hidden><b><img src="media/icons/png/saving/saving_1.png" alt="" /></b><span>Admin Center</span></button>
+        </nav>
+      </section>
+
+      <section class="screen tab-screen" data-screen="search">
+        <div class="screen-scroll">
+        <header class="trip-head search-head">
+          <button class="trip-title" data-go="trips" type="button"><span>Vietnam</span><i></i></button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </header>
+        <div class="search-filters">
+          <fieldset class="category-filter">
+            <legend>Categories</legend>
+            <select id="filterCategory" multiple hidden></select>
+            <details class="category-dropdown" id="filterCategoryDropdown">
+              <summary><span id="filterCategorySummary">All categories</span><b>&rsaquo;</b></summary>
+              <div id="filterCategoryOptions" class="category-filter-options"></div>
+            </details>
+          </fieldset>
+          <label>User<select id="filterUser"></select></label>
+          <label>From<input id="filterFromDate" type="date" /></label>
+          <label>To<input id="filterToDate" type="date" /></label>
+          <label>Location<input id="filterLocation" placeholder="Any location" /></label>
+          <label>Payment<select id="filterPayment"></select></label>
+        </div>
+        <div class="day-label"><span>Results</span><strong id="searchResultCount">0</strong></div>
+        <div id="searchEntryList" class="entry-list"></div>
+        </div>
+        <nav class="bottom-nav" aria-label="Primary">
+          <button data-go="entries" type="button"><b><img src="media/icons/png/budget/budget_1.png" alt="" /></b><span>Entries</span></button>
+          <button data-go="stats" type="button"><b><img src="media/icons/png/money/money_1.png" alt="" /></b><span>Stats</span></button>
+          <button class="active" data-go="search" type="button"><b><img src="media/icons/png/spending/spending_1.png" alt="" /></b><span>Find</span></button>
+          <button data-go="account" type="button"><b><img src="media/icons/png/wallet/wallet_1.png" alt="" /></b><span>Account</span></button>
+          <button data-go="admin" data-admin-only type="button" hidden><b><img src="media/icons/png/saving/saving_1.png" alt="" /></b><span>Admin Center</span></button>
+        </nav>
+      </section>
+
+      <section class="screen tab-screen" data-screen="account">
+        <div class="screen-scroll">
+        <header class="trip-head account-head">
+          <button class="trip-title" data-go="trips" type="button"><span>Account</span></button>
+          <button class="ghost-icon menu-trigger" type="button" aria-label="Trip options">...</button>
+        </header>
+        <section class="account-card">
+          <label class="profile-photo-row">
+            <span class="account-avatar" id="ownerAvatar">A</span>
+            <strong id="ownerPhotoLabel">Change profile picture</strong>
+            <input id="ownerPhotoInput" type="file" accept="image/*" hidden />
+          </label>
+          <h1>Account</h1>
+          <label>Name<input id="ownerNameInput" readonly /></label>
+          <label>Email ID<input id="ownerEmailInput" type="email" readonly /></label>
+          <label>Password<input id="ownerPasswordInput" type="password" readonly autocomplete="off" value="********" aria-label="Password hidden for security" /></label>
+        </section>
+
+        <section class="settings-panel account-security">
+          <h2>Security</h2>
+          <label>Current password<input id="changePasswordOld" type="password" autocomplete="current-password" placeholder="Current password" /></label>
+          <label>New password<input id="changePasswordNew" type="password" autocomplete="new-password" placeholder="New password" /></label>
+          <button id="changePasswordButton" class="secondary-button" type="button">Change password</button>
+          <p id="changePasswordStatus" class="backup-status" aria-live="polite"></p>
+          <button id="deleteAccountButton" class="danger-button" type="button">Delete account</button>
+        </section>
+
+        <section class="settings-panel">
+          <h2>Settings</h2>
+          <button id="logoutButton" class="secondary-button logout-button" data-logout type="button">Log out</button>
+          <div class="settings-group">
+            <span>Font</span>
+            <select id="fontFamilyInput">
+              <option value="inter">Inter</option>
+              <option value="system">System</option>
+              <option value="serif">Serif</option>
+              <option value="mono">Mono</option>
+            </select>
+          </div>
+          <label class="settings-group">
+            <span>Font size <small id="fontSizeLabel">16px</small></span>
+            <input id="fontSizeInput" type="range" min="14" max="20" step="1" />
+          </label>
+          <div class="settings-group">
+            <span>Theme</span>
+            <div class="theme-swatch-grid" id="themeOptions" aria-label="Theme colors">
+              <button class="theme-swatch midnight" data-theme-option="midnight" type="button" aria-label="Blue theme"><span></span></button>
+              <button class="theme-swatch aurora" data-theme-option="aurora" type="button" aria-label="Green theme"><span></span></button>
+              <button class="theme-swatch sunrise" data-theme-option="sunrise" type="button" aria-label="Amber theme"><span></span></button>
+              <button class="theme-swatch ocean" data-theme-option="ocean" type="button" aria-label="Cyan theme"><span></span></button>
+              <button class="theme-swatch forest" data-theme-option="forest" type="button" aria-label="Forest theme"><span></span></button>
+              <button class="theme-swatch berry" data-theme-option="berry" type="button" aria-label="Rose theme"><span></span></button>
+              <button class="theme-swatch mint" data-theme-option="mint" type="button" aria-label="Mint theme"><span></span></button>
+              <button class="theme-swatch gold" data-theme-option="gold" type="button" aria-label="Gold theme"><span></span></button>
+              <button class="theme-swatch rose" data-theme-option="rose" type="button" aria-label="Soft rose theme"><span></span></button>
+              <button class="theme-swatch linen" data-theme-option="linen" type="button" aria-label="Linen theme"><span></span></button>
+              <button class="theme-swatch orchid" data-theme-option="orchid" type="button" aria-label="Orchid theme"><span></span></button>
+              <button class="theme-swatch sky" data-theme-option="sky" type="button" aria-label="Sky theme"><span></span></button>
+            </div>
+          </div>
+          <div class="settings-group">
+            <span>Wallpaper</span>
+            <div id="wallpaperLibrary" class="wallpaper-library"></div>
+          </div>
+          <label class="settings-group wallpaper-name-row"><span>Wallpaper name</span><input id="wallpaperNameInput" placeholder="e.g. Soft cream morning" /></label>
+          <label class="file-row wallpaper-upload"><span>Upload</span><input id="wallpaperInput" type="file" accept="image/*" multiple /><small id="wallpaperLabel">Upload one or many images; large images are optimized before saving.</small></label>
+          <label class="toggle-row"><input id="autoLocationInput" type="checkbox" /> <span>Auto-fill GPS location for new expenses</span></label>
+        </section>
+
+        <section class="settings-panel">
+          <h2>Backup</h2>
+          <p id="backupStatus" class="backup-status">Local backup ready.</p>
+          <button class="export-row compact-export" data-backup-now type="button"><span>BK</span><strong>Save backup folder now</strong><b>&rsaquo;</b></button>
+          <button class="export-row compact-export" data-export-csv type="button"><span>CSV</span><strong>Export all data</strong><b>&rsaquo;</b></button>
+        </section>
+        </div>
+
+        <nav class="bottom-nav" aria-label="Primary">
+          <button data-go="entries" type="button"><b><img src="media/icons/png/budget/budget_1.png" alt="" /></b><span>Entries</span></button>
+          <button data-go="stats" type="button"><b><img src="media/icons/png/money/money_1.png" alt="" /></b><span>Stats</span></button>
+          <button data-go="search" type="button"><b><img src="media/icons/png/spending/spending_1.png" alt="" /></b><span>Find</span></button>
+          <button class="active" data-go="account" type="button"><b><img src="media/icons/png/wallet/wallet_1.png" alt="" /></b><span>Account</span></button>
+          <button data-go="admin" data-admin-only type="button" hidden><b><img src="media/icons/png/saving/saving_1.png" alt="" /></b><span>Admin Center</span></button>
+        </nav>
+      </section>
+
+      <section class="screen tab-screen" data-screen="admin">
+        <div class="screen-scroll">
+          <header class="trip-head admin-head">
+            <button class="trip-title" data-go="account" type="button"><span>Admin Center</span></button>
+            <button class="ghost-icon menu-trigger" type="button" aria-label="Admin options">...</button>
+          </header>
+
+          <section class="admin-hero">
+            <span>ADMIN</span>
+            <h1>System Control</h1>
+            <p>Only sreedharanys@gmail.com can open this page.</p>
+          </section>
+
+          <section class="admin-grid">
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <h2>Live Location</h2>
+                <button data-admin-location type="button">Refresh</button>
+              </div>
+              <p id="adminLocationStatus" class="admin-muted">No live location captured yet.</p>
+              <div id="adminSavedLocations" class="admin-location-list"></div>
+            </article>
+
+            <article class="admin-panel">
+              <div class="admin-panel-head">
+                <h2>System</h2>
+                <button data-backup-now type="button">Backup now</button>
+              </div>
+              <div id="adminSystemSummary" class="admin-summary"></div>
+            </article>
+          </section>
+
+          <section class="admin-panel">
+            <div class="admin-panel-head">
+              <h2>Users & Master Edit</h2>
+              <small>Passwords are visible here because this is the admin vault.</small>
+            </div>
+            <div id="adminUserList" class="admin-user-list"></div>
+          </section>
+
+          <section class="admin-panel">
+            <div class="admin-panel-head">
+              <h2>User & System Logs</h2>
+              <button data-admin-clear-logs type="button">Clear logs</button>
+            </div>
+            <div id="adminLogList" class="admin-log-list"></div>
+          </section>
+        </div>
+
+        <nav class="bottom-nav" aria-label="Primary">
+          <button data-go="entries" type="button"><b><img src="media/icons/png/budget/budget_1.png" alt="" /></b><span>Entries</span></button>
+          <button data-go="stats" type="button"><b><img src="media/icons/png/money/money_1.png" alt="" /></b><span>Stats</span></button>
+          <button data-go="account" type="button"><b><img src="media/icons/png/wallet/wallet_1.png" alt="" /></b><span>Account</span></button>
+          <button class="active" data-go="admin" type="button"><b><img src="media/icons/png/saving/saving_1.png" alt="" /></b><span>Admin</span></button>
+        </nav>
+      </section>
+
+      <section class="screen" data-screen="category">
+        <header class="category-head">
+          <button class="back" data-go="entries" type="button" aria-label="Close">&times;</button>
+          <h1>Pick a Category</h1>
+        </header>
+        <label class="search-row">
+          <span>Find</span>
+          <input id="categorySearch" placeholder="Search notes or categories" />
+        </label>
+        <div class="pill-row">
+          <button id="categoryOrderButton" type="button">Change Order</button>
+          <button id="categoryManageButton" type="button">Categories</button>
+        </div>
+        <div id="categoryManagePanel" class="category-panel" hidden></div>
+        <div id="categoryOrderPanel" class="category-panel" hidden></div>
+        <h2>Expenses</h2>
+        <div id="categoryGrid" class="category-grid"></div>
+      </section>
+
+      <section class="screen" data-screen="entry">
+        <header class="entry-editor-head">
+          <button class="back" data-go="entries" type="button" aria-label="Back">&lsaquo;</button>
+          <div class="entry-title-block">
+            <div id="editorCategoryIcon" class="category-orb">T</div>
+            <span>Add Expense</span>
+          </div>
+          <div class="editor-amount"><input id="amountInput" inputmode="decimal" placeholder="0.00" /><select id="expenseCurrencyInput" aria-label="Expense currency"></select></div>
+        </header>
+        <div class="entry-fields">
+          <section class="entry-card-block">
+            <h2>Expense details</h2>
+            <div class="entry-form-grid">
+              <label><span>Note</span><input id="noteInput" placeholder="Bus, lunch, hotel..." inputmode="text" /></label>
+              <label><span>Date</span><input id="dateInput" type="date" /></label>
+              <label><span>Payment</span><select id="paymentInput"></select></label>
+              <label><span>Country</span><input id="countryInput" list="countryOptions" placeholder="India" inputmode="text" /></label>
+              <datalist id="countryOptions"></datalist>
+              <div class="location-field">
+                <label><span>Place</span><input id="locationInput" placeholder="Street, city, or GPS location" inputmode="text" /></label>
+                <button id="useLocationButton" type="button">Use GPS</button>
+              </div>
+              <small id="locationStatus" class="location-status">Location will be saved with this expense when allowed.</small>
+            </div>
+          </section>
+
+          <section class="entry-card-block">
+            <h2>People & split</h2>
+            <div class="entry-form-grid people-grid">
+              <label><span>Paid by</span><select id="userInput"></select></label>
+              <datalist id="userOptions"></datalist>
+              <div class="participant-picker">
+                <span>Users</span>
+                <div id="expenseUserList" class="expense-user-list"></div>
+              </div>
+              <button id="splitButton" type="button" class="split-row"><span>Split</span><strong id="splitSummary">Paid by you and split equally.</strong></button>
+            </div>
+          </section>
+
+          <section class="entry-card-block">
+            <h2>Receipt</h2>
+            <label class="file-row"><span>Invoice</span><input id="invoiceInput" type="file" accept="image/*" multiple /><small id="invoiceLabel">No invoice uploaded</small></label>
+            <div id="invoiceGallery" class="media-gallery"></div>
+          </section>
+        </div>
+        <details class="advanced">
+          <summary>Advanced Options</summary>
+          <div class="advanced-options">
+            <label><input id="excludeMetricsInput" type="checkbox" /> <span>Exclude From Daily Metrics<small>Daily average ignores this item.</small></span></label>
+            <label><input id="refundInput" type="checkbox" /> <span>Refund Payment<small>Subtracts amount from total spend.</small></span></label>
+          </div>
+        </details>
+        <button id="saveEntryButton" class="floating-check" type="button">Save expense</button>
+      </section>
+
+      <section class="screen" data-screen="split">
+        <header class="split-head">
+          <button class="back" data-go="entry" type="button" aria-label="Back">&lsaquo;</button>
+          <h1>How was this expense split?</h1>
+        </header>
+        <div id="splitChoices" class="split-choices"></div>
+        <button class="split-more" data-go="adjustSplit" type="button">Adjust amount wise</button>
+      </section>
+
+      <section class="screen" data-screen="adjustSplit">
+        <header class="split-head">
+          <button class="back" data-go="split" type="button" aria-label="Back">&lsaquo;</button>
+          <h1>Adjust split</h1>
+          <button id="saveSplitButton" class="ghost-icon" data-go="entry" type="button" aria-label="Save split">&#10003;</button>
+        </header>
+        <div class="paid-by-row"><span id="paidByAvatar" class="avatar"></span><strong id="paidByLabel">Paid by you</strong></div>
+        <div class="split-tabs">
+          <button class="active" data-split-mode="equal" type="button">Equally</button>
+          <button data-split-mode="amount" type="button">Unequally</button>
+        </div>
+        <div id="splitModeHelp" class="split-help"></div>
+        <div id="splitParticipants" class="split-participants"></div>
+        <div id="splitTotal" class="split-total"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
