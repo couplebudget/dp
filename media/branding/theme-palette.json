@@ -1,0 +1,23 @@
+{
+  "name": "Couple Budget",
+  "source_images": [
+    "couple-budget-logo-round.png",
+    "couple-budget-hero.png"
+  ],
+  "colors": {
+    "navy": "#08243b",
+    "coral": "#ff6655",
+    "green": "#4f843d",
+    "gold": "#f3b43c",
+    "leaf": "#78a85b",
+    "cream": "#fff4df",
+    "paper": "#fffaf1"
+  },
+  "theme_roles": {
+    "primary": "navy",
+    "accent": "coral",
+    "success": "green",
+    "warning": "gold",
+    "background": "cream"
+  }
+}
